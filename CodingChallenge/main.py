@@ -1,54 +1,47 @@
-from fastapi import FastAPI
-from server.database import receive_questions, insert_answear, receive_answears, calculate_answear_average
-from server.models import response_model, Answear
+from fastapi import FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
-
-class Wrong_Value_Exception(Exception):
-    def __init__(self, answear_value) -> None:
-        super().__init__(f"{answear_value} is wrong value. Please choose option a, b, c or d")
-
-def check_user_answear(answear: str) -> bool:
-    if answear in {'a', 'b', 'c','d'}:
-        return True
-    raise Wrong_Value_Exception(answear)
+from server.database import (
+    receive_questions,
+    insert_answer,
+    receive_answers,
+    calculate_answer_average
+)
+from server.models import response_model, Answer
+from exceptions import WrongValueException
+from utilities import check_user_answer
 
 app = FastAPI()
 
-@app.get("/")
-def index():
-    return {"message": "Hello World"}
-
-# Get questions from MongoDB
 @app.get("/Question/", response_description="Question received")
 def get_questions():
     """
-    Retrieve the question from database
+    Retrieve the questions from database
     """
     questions = receive_questions()
     if questions:
         return response_model(questions, "Question data received successfully")
     return response_model(questions, "Empty")
 
-# Post answears to MongoDB
-@app.post("/Answear")
-def post_answears(user_answear: Answear):
-    user_answear = jsonable_encoder(user_answear)
+@app.post("/Answer")
+def post_answers(user_answer: Answer):
+    """
+    Post answers in database
+    """
+    user_answer = jsonable_encoder(user_answer)
     try:
-        if check_user_answear(answear=user_answear['answear']):
-            new_user_answear = insert_answear(user_answear)
-            return response_model(new_user_answear, "Thank You")
-    except Wrong_Value_Exception as e:
-        print(e)
-        
-# Get answears from MongoDB and calculate average of good answears
-@app.get("/Average/", response_description="Answears received")
-def get_answears():
+        if check_user_answer(answer=user_answer['answer']):
+            new_user_answer = insert_answer(user_answer)
+            return response_model(new_user_answer, "Thank You")
+    except WrongValueException as e:
+        raise HTTPException(status_code=400, detail=repr(e))
+
+@app.get("/Average/", response_description="Answers received")
+def get_answers():
     """
-    Retrieve the answears from database 
+    Retrieve the answers from database and calculate average of good answers
     """
-    answears = receive_answears()
-    print(answears)
-    average = calculate_answear_average(answears)
-    if answears:
-        return response_model(answears, f"Average: {average}")
-    return response_model(answears, "Empty")
+    answers = receive_answers()
+    average = calculate_answer_average(answers)
+    if answers:
+        return response_model(answers, f"Average of good answers: {average}")
+    return response_model(answers, "Empty list of answers")

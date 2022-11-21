@@ -6,12 +6,16 @@ load_dotenv(find_dotenv())
 password = os.environ.get("MONGODB_PWD")
 
 # Connection with MongoDB
-connection_string =f"mongodb+srv://LukaszWelna:{password}@codingchallenge.1erxlw7.mongodb.net/?retryWrites=true&w=majority"
+connection_string =(f"mongodb+srv://LukaszWelna:{password}@codingchallenge.1erxlw7."
+                    f"mongodb.net/?retryWrites=true&w=majority")
+                    
 client = MongoClient(connection_string)
 db_pool = client.db_Pool
 
-# Convert questions document to dictionary
 def question_helper(question) -> dict:
+    """
+    Convert question data to dictionary type
+    """
     return {
         "id": str(question["_id"]),
         "content": question["content"],
@@ -21,74 +25,67 @@ def question_helper(question) -> dict:
         "d": question["d"],
     }
 
-# Get questions from MongoDB
 def receive_questions():
+    """
+    Retrieve the questions from database
+    """
     collection = db_pool.coll_Questions
     questions = []
     for question in collection.find():
         questions.append(question_helper(question))
     return questions
 
-# Get answears from MongoDB
-def receive_answears():
-    collection = db_pool.coll_Answears
-    answears = []
-    for answear in collection.find():
-        answears.append(answear_helper(answear))
-    return answears
+def receive_answers():
+    """
+    Retrieve the answers from database
+    """
+    collection = db_pool.coll_Answers
+    answers = []
+    for answer in collection.find():
+        answers.append(answer_helper(answer))
+    return answers
 
-# Convert answears document to dictionary
-def answear_helper(answear) -> dict:
+def answer_helper(answer) -> dict:
+    """
+    Convert answer data to dictionary type
+    """
     return {
-        "id": str(answear["_id"]),
-        "answear": answear["answear"],
+        "id": str(answer["_id"]),
+        "answer": answer["answer"],
     }
 
-# Convert answears document to dictionary
-def good_answear_helper(answear) -> dict:
+def good_answer_helper(answer) -> dict:
+    """
+    Convert good answer data to dictionary type
+    """
     return {
-        "id": str(answear["_id"]),
-        "good_answear": answear["good_answear"],
+        "id": str(answer["_id"]),
+        "good_answer": answer["good_answer"],
     }
 
-def insert_answear(user_answear: dict) -> dict:
-    collection = db_pool.coll_Answears
-    inserted_id = collection.insert_one(user_answear).inserted_id
-    inserted_answear = collection.find_one({"_id": inserted_id})
-    return answear_helper(inserted_answear)
+def insert_answer(user_answer: dict) -> dict:
+    """
+    Insert the answers to database
+    """
+    collection = db_pool.coll_Answers
+    inserted_id = collection.insert_one(user_answer).inserted_id
+    inserted_answer = collection.find_one({"_id": inserted_id})
+    return answer_helper(inserted_answer)
 
-def calculate_answear_average(answears: list) -> float:
-    sum = 0
-    collection = db_pool.coll_GoodAnswears
-    good_answears = []
-    for answear in collection.find():
-        good_answears.append(good_answear_helper(answear))
+def calculate_answer_average(answers: list) -> float:
+    """
+    Calculate average of good answers
+    """
+    sum_of_good_answers = 0
+    collection = db_pool.coll_GoodAnswers
+    good_answers = []
+    for answer in collection.find():
+        good_answers.append(good_answer_helper(answer))
 
-    for index in range(len(answears)):
-        for value in answears[index]['answear']:
-            if value == good_answears[0]["good_answear"]:
-                sum += 1
-    average = sum / len(answears) * 100
-    return average
-
-#ans = [{'id': '637a77c8bed886f872ee8b87', 'answear': 'a'}, {'id': '637a77c8bed886f872ee8b87', 'answear': 'b'}, {'id': '637a77c8bed886f872ee8b87', 'answear': 'b'}]
-#print(calculate_answear_average(ans))
-# Get answears from MongoDB
-# def receive_answears():
-#     collection = db_pool.coll_Answears
-#     answears = []
-#     for answear in collection.find():
-#         answears.append(answear_helper(answear))
-#     return answears
-
-
-# def insert_test_document():
-#     collection = db_pool.coll_GoodAnswears
-#     first_question = {
-#         "good_answear": "b",
-#     }
-
-#     inserted_id = collection.insert_one(first_question).inserted_id
-#     print(inserted_id)
-
-# insert_test_document()
+    if (answers and good_answers):
+        for value in answers:
+            if value['answer'] == good_answers[0]["good_answer"]:
+                sum_of_good_answers += 1
+        average = sum_of_good_answers / len(answers) * 100
+        return average
+    return 0
