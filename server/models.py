@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-def response_model(data, message):
+def response_model(data: list, message: str) -> dict:
     """
     Function which shows result in API
     """

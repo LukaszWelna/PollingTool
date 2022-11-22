@@ -1,13 +1,14 @@
 # Dockerfile
 FROM python:3.10.8
 
-ADD main.py exceptions.py utilities.py ./server tests* .env requirements.txt ./
+ADD main.py exceptions.py utilities.py tests* .env requirements.txt ./
+
+COPY ./server ./server
 
 RUN pip install -r requirements.txt
 
-ENV PYTHONPATH "${PYTHONPATH}:/server/"
 
-CMD [ "python", "-m", "uvicorn", "main:app", "--reload" ]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
 
 
 
