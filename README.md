@@ -33,8 +33,8 @@ Steps to run project locally:
 
 Steps to run project with Docker:
 - Install docker in your system.
-- Download docker image via command `docker pull lukaszwelna/coding_challenge:v1.0`
-- Run application by command `docker run -p 80:80 lukaszwelna/coding_challenge:v1.0`
+- Download docker image via command `docker pull lukaszwelna/coding_challenge:v1.1`
+- Run application by command `docker run -p 80:80 lukaszwelna/coding_challenge:v1.1`
 - Application is accessible in localhost port 80
 
 ## Docker
