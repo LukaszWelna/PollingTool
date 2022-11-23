@@ -12,7 +12,7 @@ from utilities import check_user_answer
 
 app = FastAPI()
 
-@app.get("/Question/", response_description="Question received")
+@app.get("/question/", response_description="Question received")
 def get_questions():
     """
     Retrieve the questions from database
@@ -22,7 +22,7 @@ def get_questions():
         return response_model(questions, "Question data received successfully")
     return response_model(questions, "Empty")
 
-@app.post("/Answer")
+@app.post("/answer")
 def post_answers(user_answer: Answer):
     """
     Post answers in database
@@ -35,7 +35,7 @@ def post_answers(user_answer: Answer):
     except WrongValueException as e:
         raise HTTPException(status_code=400, detail=repr(e))
 
-@app.get("/Average/", response_description="Answers received")
+@app.get("/average/", response_description="Answers received")
 def get_answers():
     """
     Retrieve the answers from database and calculate average of good answers
@@ -43,5 +43,5 @@ def get_answers():
     answers = receive_answers()
     average = calculate_answer_average(answers)
     if answers:
-        return response_model(answers, f"Average of good answers: {average}")
+        return response_model(answers, f"Average of good answers: {average}%")
     return response_model(answers, "Empty list of answers")

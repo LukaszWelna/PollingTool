@@ -8,7 +8,7 @@ password = os.environ.get("MONGODB_PWD")
 # Connection with MongoDB
 connection_string =(f"mongodb+srv://testUser:{password}@codingchallenge.1erxlw7."
                     f"mongodb.net/?retryWrites=true&w=majority")
-                    
+                  
 client = MongoClient(connection_string)
 db_poll = client.db_Poll
 

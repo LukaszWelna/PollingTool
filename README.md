@@ -1,47 +1,57 @@
 # Coding challenge - polling tool
 > The application is a polling tool. It allows to send aswers to a question and store them in the database. 
- . After that, . 
-> 
 
 ## Table of Contents
 * [General Info](#general-information)
 * [Technologies Used](#technologies-used)
-* [Screenshots](#screenshots)
 * [Setup](#setup)
-* [Usage](#usage)
+* [Docker](#docker)
+* [Unit tests](#unit-tests)
 * [Project Status](#project-status)
-* [Room for Improvement](#room-for-improvement)
-* [Acknowledgements](#acknowledgements)
 * [Contact](#contact)
 
 ## General Information
 - The user is able to receive question from database.
 - Application allows to send answer and save this into database.
 - User can check what is the average of good answers to that question.
-- Application is using python and MongoDB. 
+- Application is using python and MongoDB.
+- The password to database is placed in .env file. Connection with database is using "testUser" which is added to database. 
 
 ## Technologies Used
-- python - version 3.10.8
-- fastapi - version 0.86.0
-- pymongo - version 4.3.3
-- pytest - version 7.2.0
-- pydantic - version 1.10.2
-- uvicorn - version 0.18.3
-
-## Screenshots
-![Swagger UI](./images/SwaggerUI.jpg)
+- Python - version 3.10.8
+- MongoDB - vesion 5.0.14
 
 ## Setup
+The required dependencies to run the project are listed in requirements.txt file.
 
-## Usage
+Steps to run project locally:
+- Install python 3.10.8 from https://www.python.org/downloads/release/python-3108/.
+- Clone repository to selected folder.
+- Install required dependecies by running command `pip install -r requirements.txt`
+- If you wish to run unit tests run command `pip install -r requirements_dev.txt`
+- Run application by command `python -m uvicorn main:app`
+
+Steps to run project with Docker:
+- Install docker in your system.
+- Download docker image via command `docker pull lukaszwelna/coding_challenge:v1.0`
+- Run application by command `docker run -p 80:80 lukaszwelna/coding_challenge:v1.0`
+- Application is accessible in localhost port 80
+
+## Docker
+Building docker image:
+- Run command `docker build -t <name_of_docker_image> .`
+
+## Unit tests
+- Run command `pip install -r requirements_dev.txt`
+- Run command `python -m pytest`
 
 ## Project Status
+The assumed funcionality is done. 
+It is possible to improve the project in future. 
 
-
-## Room for Improvement
-
-## Acknowledgements
-
+Improvements:
+- Adding frontend.
+- Extending the survey by adding more questions. 
 
 ## Contact
-
+Created by Lukasz Welna. 
